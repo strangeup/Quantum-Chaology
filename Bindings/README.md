@@ -14,19 +14,19 @@ liblapacke and liblapack-dev
 
 BLAS can similarly be set-up using apt get install libblas3 and libblas-dev
 
-BOOST can be set up following instructions from 
-http://www.boost.org/doc/libs/1_57_0/more/getting_started/unix-variants.html
+BOOST can be set up following instructions from [here]
+(http://www.boost.org/doc/libs/1_57_0/more/getting_started/unix-variants.html)
 
 AMD and UMFPACK can easily be set up using apt-get install libsuitesparse-metis 
 libsuitesparse-metis-dev
 
-ARPACK can be set up most easily using ARPACK-ng found at 
-http://forge.scilab.org/index.php/p/arpack-ng/ this is a version of ARPACK which has been 
+ARPACK can be set up most easily using ARPACK-ng found [here] 
+(http://forge.scilab.org/index.php/p/arpack-ng/) this is a version of ARPACK which has been 
 modified slightly with a few bug fixes and an included make file for easy installation
 
 BOOST-UMFPACK bindings: these allow the usage of sparse routines written in c for the shift 
-inverion technique. The bindings used can be found here 
-http://mathema.tician.de/software/boost-numeric-bindings/ and for quick use the boost
+inverion technique. The bindings used can be found [here] 
+(http://mathema.tician.de/software/boost-numeric-bindings/) and for quick use the boost
 folder can just be merged into your boost folder (or use the make file) which should get 
 you set up. These bindings will also allow you to use the files found elswhere on this git 
 which require boost LAPACK bindings.
@@ -49,7 +49,7 @@ ublas::compressed_matrix<double, ublas::column_major, 0,ublas::unbounded_array<i
 -number of eigenvalues/eigenvectors:
 	int nev
 
--length of arnoldi factorisation (look this up in ARNOLDI documentation for more 
+-length of arnoldi factorisation (look this up in [ARNOLDI documentation](http://www.caam.rice.edu/software/ARPACK/) for more 
 information)	
 	int ncv 
 NB: should be greater than twice the number of eigenvalues but less than size of matrix
@@ -60,7 +60,7 @@ NB: should be greater than twice the number of eigenvalues but less than size of
 -[OPTIONAL] max number of iterations
 	int maxit
 
--[OPTIONAL] tolerance (look this up in ARNOLDI documentation for more information)
+-[OPTIONAL] tolerance (look this up in [ARNOLDI documentation](http://www.caam.rice.edu/software/ARPACK/) for more information)
 	int tol
 NB: tol=0 means it uses the machine precision
 	
