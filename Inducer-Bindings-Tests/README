@@ -1,0 +1,3 @@
+contents of this folder:
+-arpack-with-comments.hpp : my interpretation of Andreas' code
+-minimal_example.cpp : an example showing the right arguments for the bindings (compiles!)	
