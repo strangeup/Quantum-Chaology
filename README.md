@@ -1,5 +1,10 @@
 # Quantum-Chaology
-A Finite Difference Approach to Quantum Chaology
+A Finite Difference Approach to Quantum Chaology.
+
+# Guide to Contents
+This is intended to be a partial write-up of my findings and progression of the my simulation, with a few bits that could be more generally useful.
+
+Please note that amongst all of this I am still learning as well, any mistakes, contradictions or omissions please leave comments/issues! I don't profess that everything I have done is the best way (in fact I'm almost positive it isn't!) but this is how I have proceeded and I hope that this will be  useful for others starting out out with this manner of project.
 
 #February 24
 
