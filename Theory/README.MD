@@ -1,4 +1,4 @@
-# Contents of Folder
+## Contents of Folder
 
 * project_1.pdf:  a report outlining the findings of semester 1. Please do not plagiarise this report. 
 
