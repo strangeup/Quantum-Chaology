@@ -2,7 +2,7 @@
 A Finite Difference Approach to Quantum Chaology.
 
 # Guide to Contents
-This is intended to be a partial write-up of my findings and progression of the simulation my projectg partner and I have written, with a few bits included that could be more generally useful.
+This is intended to be a partial write-up of my findings and the progression of the simulation my project partner and I have written, with a few extra bits included that could be more generally useful.
 
 Please note that amongst all of this I am still learning as well, any mistakes, contradictions or omissions please leave comments/issues! I don't profess that everything I have done is the best way (in fact I'm almost positive it isn't!) but this is how I have proceeded and I hope that this will be  useful for others starting out out with this manner of project.
 
