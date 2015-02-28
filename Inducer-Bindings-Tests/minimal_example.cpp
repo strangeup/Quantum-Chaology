@@ -1,3 +1,9 @@
+// A test of arpack.hpp
+// The input data was gibberish, just a test to check against the compiler the 
+// matrix used is probably singular and too small so most likely wouldn't work anyway.
+// However I couldnt get Inducers' code to give sensible eigenvalues even for matrices 
+// I knew should give me finite results.
+
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/bindings/arpack.hpp>
