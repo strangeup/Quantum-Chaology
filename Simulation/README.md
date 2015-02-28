@@ -12,4 +12,4 @@ To compile (set-up dependant) g++ 2Dmain -o name -std=c++11 -llapack -larpack -l
 
 * 2Dheaders.h : external headers, global settings and input parameters
 
-* 2Dfunctions.h : all of the functions created for use in model (unfinished in places). More detailed explanations can be found [here](https://github.com/strangeup/Quantum-Chaology/wiki/Simulation).
+* 2Dfunctions.h : all of the functions created for use in model (unfinished in places). More detailed explanations can be found [here](https://github.com/strangeup/Quantum-Chaology/wiki/FUNCTIONS.H).
