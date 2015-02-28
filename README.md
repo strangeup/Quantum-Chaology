@@ -10,6 +10,9 @@ Please note that amongst all of this I am still learning as well, any mistakes, 
 
 Many thanks to Paul for co-writing this simulation with me and to [Inducer](https://github.com/inducer) for making the initial bindings used for LAPACK and UMFPACK so accessible.
 
+#January 29
+The correlation code was optimised as previously it was painfully slow. The change that was implemented to speed the system up highlighted a much more pressing problem that any assignment scaled at least as the dimension (D) squared of the matrix. This was obviously unnecessary as the matrix only contains ~5D (in principle known) elements. A more general approach to assignment was found and implemented which resulted in only necessary (non zero) elements being iterated through.  
+
 #February 7
 
 After initial attempts to install [Pyublas](http://mathema.tician.de/software/pyublas/) failed (using both apt-get and the make file) on the version of [xubuntu] (http://cdimage.ubuntu.com/ubuntu-core/releases/14.04/release/) I had installed due to an undetermined bug, a fresh install of the [latest xubuntu] (http://releases.ubuntu.com/14.10/) was performed.
@@ -20,7 +23,7 @@ Then PyUBlasExt was installed, using instructions that can be found [here](https
 
 #February 15
 
-Now that both [Pyublas](http://mathema.tician.de/software/pyublas/) and [PyUblasExt](https://pypi.python.org/pypi/PyUblasExt/0.92.4) were correctly installed investigation of [arpack.hpp] (https://github.com/inducer/arpack/blob/master/CPLUSPLUS/arpack.hpp) continued in more detail. The bindings were thoroughly commented to allow the understanding of the programs structure, the function "
+Now that both [Pyublas](http://mathema.tician.de/software/pyublas/) and [PyUblasExt](https://pypi.python.org/pypi/PyUblasExt/0.92.4) were correctly installed investigation of [arpack.hpp] (https://github.com/inducer/arpack/blob/master/CPLUSPLUS/arpack.hpp) continued in more detail. The bindings were thoroughly commented to allow the understanding of the programs structure, the function 
 perform\_reverse\_communication's arguments and it's capabilities. 
 
 A minimal example was attempted, which compiled but did not produce any sensible results. It was then realised that this manner of approach may not work for a small matrix so it was implemented in the main body to attempt to try a larger matrix. Again this produced no physically acceptable results. 
@@ -37,6 +40,6 @@ Unfortunately a lot of time was wasted trying to get Inducers bindings to work, 
 
 A complete version of the bindings (written by my project partner Paul) which I adapted for use as a seperate file was completed today. The previous protoptype worked well for small matrices but for large matrices encountered a segfault. This issue was due to the use of C-Style arrays (which we should have realised would cause a stack overflow for very large arrays). 
 
-This problem was overcome by using [boost scoped_array](http://www.boost.org/doc/libs/1_57_0/libs/smart_ptr/scoped_array.htm) data type, which functions very similarly but stores that data dynamically, not statically.
+This problem was overcome by using [boost scoped_array](http://www.boost.org/doc/libs/1_57_0/libs/smart_ptr/scoped_array.htm) data type, which functions very similarly but stores data dynamically, not statically.
 
 The other files for the simulation are currently a work in progress, they are fully functional but unfortunately rather verbose and in some places less than intuitive. A more general fashion will be worked on throughout the course of the project.
