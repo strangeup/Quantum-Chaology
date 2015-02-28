@@ -14,6 +14,10 @@ Many thanks to Paul for co-writing this simulation with me and to [Inducer](http
 
 After inital attempts to install [Pyublas](http://mathema.tician.de/software/pyublas/) failed (using both apt-get and the make file) on the version of [xubuntu] (http://cdimage.ubuntu.com/ubuntu-core/releases/14.04/release/) I had installed due to an undetermined bug, a fresh install of the [latest xubuntu] (http://releases.ubuntu.com/14.10/) was performed.
 
+[LAPACK](http://www.netlib.org/lapack/), [BLAS](http://www.netlib.org/blas/), [BOOST](http://www.boost.org/doc/libs/1_57_0/more/getting_started/unix-variants.html) and [ARPACK-ng](http://forge.scilab.org/index.php/p/arpack-ng/ ) were installed and set-up (with [bindings](https://svn.boost.org/svn/boost/sandbox/numeric_bindings/) for the former) prior to PyUbasExt.
+
+Then PyUBlasExt was installed, using instructions that can be found [here]().
+
 #February 15
 
 Now that both [Pyublas](http://mathema.tician.de/software/pyublas/) and [PyUblasExt](https://pypi.python.org/pypi/PyUblasExt/0.92.4) were correctly installed investigation of [arpack.hpp] (https://github.com/inducer/arpack/blob/master/CPLUSPLUS/arpack.hpp) continued in more detail. The bindings were thoroughly commented to allow the understanding of the programs structure, the function "
