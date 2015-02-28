@@ -36,31 +36,31 @@ That is a lot of set-up so good luck!
 #Usage
 
 Arguments: 
--a matrix which you wish to solve as a boost::compressed_matrix:
+* a matrix which you wish to solve as a boost::compressed_matrix:
 ublas::compressed_matrix<double, ublas::column_major, 0,ublas::unbounded_array<int>,
 				ublas::unbounded_array<double> > mat
 
--a vector for results: 
+* a vector for results: 
 	vector<double> evals
 
--a vector for eigenvectors:
+* a vector for eigenvectors:
 	vector<vector<double> > > evecs
 
--number of eigenvalues/eigenvectors:
+* number of eigenvalues/eigenvectors:
 	int nev
 
--length of arnoldi factorisation (look this up in [ARNOLDI documentation](http://www.caam.rice.edu/software/ARPACK/) for more 
+* length of arnoldi factorisation (look this up in [ARNOLDI documentation](http://www.caam.rice.edu/software/ARPACK/) for more 
 information)	
 	int ncv 
 NB: should be greater than twice the number of eigenvalues but less than size of matrix
 
--shift (which eigenvalue you want to get values around eg. 3)
+* shift (which eigenvalue you want to get values around eg. 3)
 	double sigma
 
--[OPTIONAL] max number of iterations
+* [OPTIONAL] max number of iterations
 	int maxit
 
--[OPTIONAL] tolerance (look this up in [ARNOLDI documentation](http://www.caam.rice.edu/software/ARPACK/) for more information)
+* [OPTIONAL] tolerance (look this up in [ARNOLDI documentation](http://www.caam.rice.edu/software/ARPACK/) for more information)
 	int tol
 NB: tol=0 means it uses the machine precision
 	
