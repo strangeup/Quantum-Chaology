@@ -19,4 +19,4 @@ A complete version of the bindings (written by my project partner Paul) which I 
 
 This problem was overcome by using boost::scoped_array data type, which functions very similarly but stores that data dynamically, not statically.
 
-The other files for the simulation are currently a work in progress, they are fully functional but unfortunatlely rather verbose and in some places less than intuitive. A more general fashion will be worked on throughout the course of the project.
+The other files for the simulation are currently a work in progress, they are fully functional but unfortunately rather verbose and in some places less than intuitive. A more general fashion will be worked on throughout the course of the project.
