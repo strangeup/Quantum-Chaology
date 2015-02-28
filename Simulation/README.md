@@ -1,6 +1,7 @@
 #Contents of Folder
 This simulates 2D quantum billiards using a finite difference approach
-compile (set-up dependant) g++ 2Dmain -o name -std=c++11 -llapack -larpack -lumfpack -lamd -I /path/to/suiteparse/ 
+
+To compile (set-up dependant) g++ 2Dmain -o name -std=c++11 -llapack -larpack -lumfpack -lamd -I /path/to/suiteparse/ 
 
 -2Dmain.cpp : The function that calls everything three main approachs
   spectral analysis: for analysis (using Random Matrix Theory) of the eigenvalue spectrum
