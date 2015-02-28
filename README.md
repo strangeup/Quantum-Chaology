@@ -16,7 +16,7 @@ After inital attempts to install [Pyublas](http://mathema.tician.de/software/pyu
 
 [LAPACK](http://www.netlib.org/lapack/), [BLAS](http://www.netlib.org/blas/), [BOOST](http://www.boost.org/doc/libs/1_57_0/more/getting_started/unix-variants.html) and [ARPACK-ng](http://forge.scilab.org/index.php/p/arpack-ng/ ) were installed and set-up (with [bindings](https://svn.boost.org/svn/boost/sandbox/numeric_bindings/) for the former) prior to PyUbasExt.
 
-Then PyUBlasExt was installed, using instructions that can be found [here]().
+Then PyUBlasExt was installed, using instructions that can be found [here](https://github.com/strangeup/Quantum-Chaology/blob/master/Inducer-Bindings-Tests/procedure.txt).
 
 #February 15
 
