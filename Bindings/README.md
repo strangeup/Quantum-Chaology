@@ -1,4 +1,4 @@
-#BOOST BINDING FOR ARPACK SYMMETRIC SOLVER
+#Boost Binding for ARPACK solver
 
 #Description
 Links and implements the ARPACK symmetric solver for a modest sized sparse matrix, with
