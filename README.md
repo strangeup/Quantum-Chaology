@@ -1,5 +1,5 @@
 # Quantum-Chaology
-A Finite Difference Approach to Quantum Chaology. If you are confused about any of the contents of this git it should at least be partially explained within this document, or in the readme files in each folder.
+A Finite Difference Approach to Quantum Chaology. The simulation has been written for a master project in Physics, but elements of it may be useful in other fields. If you are confused about any of the contents of this git it should at least be partially explained within this document, or in the readme files in each folder.
 
 # Guide to Contents
 This is intended to be a partial write-up of my findings and the progression of the simulation my project partner and I have written, with a few extra bits included that could be more generally useful.
