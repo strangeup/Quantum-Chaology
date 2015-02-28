@@ -1,4 +1,4 @@
-#Contents of Folder
+## Contents of Folder
 This simulates 2D quantum billiards using a finite difference approach. For more information about theory see [my report](https://github.com/strangeup/Quantum-Chaology/blob/master/Theory/Project_1.pdf).
 
 To compile (set-up dependant) g++ 2Dmain -o name -std=c++11 -llapack -larpack -lumfpack -lamd -I /path/to/suiteparse/ 
