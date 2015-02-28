@@ -6,6 +6,10 @@ This is intended to be a partial write-up of my findings and progression of the 
 
 Please note that amongst all of this I am still learning as well, any mistakes, contradictions or omissions please leave comments/issues! I don't profess that everything I have done is the best way (in fact I'm almost positive it isn't!) but this is how I have proceeded and I hope that this will be  useful for others starting out out with this manner of project.
 
+#Acknowledgements
+
+Many thanks to Paul for co-writing this simulation with me and to [Inducer](https://github.com/inducer) for making the initial bindings used for LAPACK and UMFPACK so accessible.
+
 #February 24
 
 After failing to find a way of working the ARPACK bindings we initially set out to use (see Inducers bindings [here]( https://github.com/inducer/arpack/blob/master/CPLUSPLUS/arpack.hpp])). We decided to try our hand at our own. These bindings lack the finesse and generality of the ones we orignally attempted to use but using the others we did not manage to get reasonable results (they were either infinite or very close to zero).
