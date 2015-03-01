@@ -8,9 +8,11 @@
 
 * Now simply:
        
-       /:~$ ./configure
-       /:~$ make 
-       /:~$ make install
+       `/:~$ ./configure`
+
+       `/:~$ make `
+       
+       `/:~$ make install`
 
 *Download most recent [PyUblasExt](http://git.tiker.net/pyublasext.git/snapshot/a10af3278f2ebdf7d396644dafd681ab73000183.tar.gz) and unzip. Please note that there have been updates to aksetup so it's worthwhile downloading straight from the git.
 
