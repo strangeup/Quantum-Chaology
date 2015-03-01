@@ -9,16 +9,17 @@ shift invert.
 Needs correct installation of umfpack, AMD, LAPACK, BLAS and ARPACK and up to date BOOST
 libraries
 
-* LAPACK can easily be downloaded on a UBUNTU/MINT system using apt-get install liblacpack3 
-liblapacke and liblapack-dev 
+* LAPACK can easily be downloaded on a UBUNTU/MINT system using the following command
+     * `:~$ apt-get install liblacpack3 liblapacke liblapack-dev`
 
-* BLAS can similarly be set-up using apt get install libblas3 and libblas-dev
+* BLAS can similarly be set-up using: 
+     * `:~$ apt get install libblas3 libblas-dev`
 
 * BOOST can be set up following instructions from [here]
 (http://www.boost.org/doc/libs/1_57_0/more/getting_started/unix-variants.html)
 
-* AMD and UMFPACK can easily be set up using apt-get install libsuitesparse-metis 
-libsuitesparse-metis-dev
+* AMD and UMFPACK can easily be set up using: `
+     * `:~$ apt-get install libsuitesparse-metis libsuitesparse-metis-dev`
 
 * ARPACK can be set up most easily using ARPACK-ng found [here] 
 (http://forge.scilab.org/index.php/p/arpack-ng/) this is a version of ARPACK which has been 
