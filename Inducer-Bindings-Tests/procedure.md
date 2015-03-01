@@ -4,7 +4,7 @@
 
 * Unzip using this command:
 
-	'/:~$ zcat arpack-ng_3.1.5.tar.gz | tar -xvf -D'
+	`/:~$ zcat arpack-ng_3.1.5.tar.gz | tar -xvf -D`
 
 * Now simply:
        
