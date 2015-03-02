@@ -3,34 +3,34 @@
 #include "2DHeaders.h"
 
 //----------------------------------------------------------------------------------
-//Functions
+//Function Declarations
 //----------------------------------------------------------------------------------
 //Potential Well functions
 int matrixElement(int i,int j,int k,int l); //returns unreduced matrix element
 bool pointInWell(int y, int x); //checks if point in the potential well 
 int numberPoints(); //returns number of points in the potential well
 void wrap(vector<int> &indexLookup); //wrapping function (passed by ref)
-void wrap( boost::unordered_map<int,int> &indiceLookup); //wrapping function (passed by ref)
+void wrap( boost::unordered_map<int,int>& indiceLookup); //wrapping function (passed by ref)
 int unwrap(int gridPoint, char index); //returns index specified by combined index ijkl
 
-
 //Output Functions
-void printEigenvalues(vector <double>  &vec, string name); //prints vector
-void printMatrix(ublas::matrix<double> mat, string outputFilename); //prints matrix
-void printWell(string filename); //prints potential well
-void sayWell(); //shows the potential well used in terminal
-void printEigenvectors(ublas::matrix<double> mat, string name); //prints vectors
+void printEigenvalues(const vector<double>& vec, const string name, const char delimiter); //prints vector
+template <typename boost_ublas_matrix>
+void printMatrix(const boost_ublas_matrix& mat, const string outputFilename, const char delimiter=',');
+void printWell(const string filename); //prints potential well
+void printWell(); //shows the potential well used in terminal
+void printEigenvectors(const ublas::matrix<double>& mat, const string name, const int eigenNumber, const char delimiter);
+void printEigenvectors(const vector<vector <double> >& evecs, const char delimiter); //prints out vectors
 
 //Utility Functions
 void text(const string str); //flush text in terminal
-string int2string(int Integer); //converts int to string
+string int2string(const int Integer); //converts int to string
 string namingConvention(); //naming convention for files
+string file_extension(const char& delimiter); //returns the file extension deduced from delimiter
 
-//Main Body Functions
-void correlationFunction(); //for correlation data
-void spectralAnalysis(); //for spectral data
+//Matrix Assignment Functions
 double reducedElement(int i, int j, int k, int l); //reduced matrix element
-void nonZeroElem(vector<pair <int,int> > &nonZeros); //non zero i-j combinations
+void nonZeroElem(vector<pair<int,int> >& nonZeros); //non zero i-j combinations
 template <typename boost_ublas_matrix>
 void make_Matrix(boost_ublas_matrix &Mat, vector< pair<int,int> >& nonZeros);
 
@@ -45,6 +45,8 @@ void periodicSolutions(sparse_matrix &map_cross,int &x,int &y, double &cross, in
 //Arpack Specific Functions
 void arpack_solve();
 
+//----------------------------------------------------------------------------------
+//POTENTIAL WELL FUNCTIONS
 
 bool pointInWell(int y, int x) // row, column format
 //checks if point is interior (ie. non zero)
@@ -157,34 +159,6 @@ int matrixElement(int i, int j, int k, int l)
 }	 //end of matrixElement
 
 
-void sayWell()
-//prints well to terminal
-{
-	for(int y=-Ny; y<Ny+1; ++y) 
-	//includes a zero border to illustrate well
-{
-	for(int x=-Nx; x<Nx+1; ++x)
-		cout << pointInWell(abs(y),abs(x))<<" ";
-	cout<< endl;
-}
-}//end of sayWell
-
-
-void printWell(string filename)
-// output to file
-{
-ofstream out(filename.c_str());
-for(int y=-Ny; y<Ny+1; ++y) 
-	//includes a zero border to illustrate well
-{
-	for(int x=-Nx; x<Nx+1; ++x)
-		out << pointInWell(abs(y),abs(x))<<" ";
-	out<< endl;
-}
-	out.close();
-}//end of sayWell
-
-
 int numberPoints()
 //returns number of interior points
 {
@@ -213,6 +187,7 @@ void wrap(vector<int> &indiceLookup)
 	}
 } //end of wrap
 
+
 void wrap( boost::unordered_map<int,int> &indiceLookup)
 //takes a vector and fills it with 'wrapped' indices of interior points
 {
@@ -225,30 +200,6 @@ void wrap( boost::unordered_map<int,int> &indiceLookup)
 		}
 			// r*Nx*Ny+c ties everything into one integer to keep things neat
 	}
-} //end of wrap
-
-
-void printEigenvectors(ublas::matrix<double> mat, string name)
-//prints out a particular eigenvector grid
-{
-  int count=0;
-  ofstream out(name.c_str());
-  
-  for(int y=0; y<Ny; ++y)
-  {
-	for(int x=0; x<Nx; ++x)
-	{	
-	  if (pointInWell(y, x)==true)
-	    {
-	    out << pow(mat(count,5),2) << ",";
-	    ++count;
-	    }
-	  else 
-	    out << 0 << ",";
-	}
-  out << endl;
-  }
-  out.close();
 } //end of wrap
 
 
@@ -268,44 +219,8 @@ int unwrap(int gridPoint, char index)
 	}//end of switch
 }//end of unwrap
 
-
-void printEigenvalues(vector <double>  &vec, string name)
-// print eigenvalues to .csv file
-{
-	const int size = vec.size();
-	
-	// output to file
-	ofstream out(name.c_str());
-	
-	for(int i = 0; i < size; ++i)
-	{
-		// print numerical eigenvalues
-		out << vec[i] << endl;
-	}
-	out.close();
-} //end of print eigenvalues
-
-
-void printMatrix(ublas::matrix<double> mat, string outputFilename)
-//prints ublas matrix
-{
-	const int rows = mat.size1();
-	const int cols = mat.size2();
-	
-	// output to file
-	ofstream out(outputFilename.c_str());
-	
-	for(int r = 0; r < rows; ++r)
-	{
-		for(int c = 0; c < cols; ++c)
-		{
-			out << mat(r, c) << ",";
-		}
-		out << endl;
-	}
-	out.close();
-} //end of print matrix
-
+//------------------------------------------------------------------------------
+//UTILITY FUNCTIONS
 
 void text(const string str) 
 //utility function
@@ -314,7 +229,7 @@ void text(const string str)
 	cout << flush << "\r" << "                                                                             ";
 }
 
-string int2string(int Integer)
+string int2string(const int Integer)
 {
     stringstream ss; //define sstream
     string Str; // define string
@@ -363,19 +278,144 @@ return name;
 }//end of namingConvention
 
 
+string file_extension(const char& delimiter)
+//returns the file extension deduced from delimiter
+{	
+	string extension;
+  	switch (delimiter){ //adds file extension according to delimiter
+  		case ',':
+  			extension=".csv"; break;
+  		case ' ':
+  			extension=".dat"; break;
+  		default:
+			extension=".txt"; break;  	
+	}
+	return extension;
+}
+
+//----------------------------------------------------------------------------------
+//OUTPUT FUNCTIONS
+void printWell()
+//prints well to terminal
+{
+	for(int y=-Ny; y<Ny+1; ++y) 
+	//includes a zero border to illustrate well
+	{
+		for(int x=-Nx; x<Nx+1; ++x)
+			cout << pointInWell(abs(y),abs(x))<<"\t";
+	cout<< endl;
+	}
+}//end of sayWell
+
+
+void printWell(const string filename)
+// output to file
+{
+ofstream out(filename.c_str());
+for(int y=-Ny; y<Ny+1; ++y) 
+	//includes a zero border to illustrate well
+{
+	for(int x=-Nx; x<Nx+1; ++x)
+		out << pointInWell(abs(y),abs(x))<<" ";
+	out<< endl;
+}
+	out.close();
+}//end of print Well
+
+
+void printEigenvectors(const ublas::matrix<double>& mat, const string name, const int eigenNumber, const char delimiter=',')
+//prints out a particular eigenvector grid
+{
+  string extension(file_extension(delimiter));
+  int count(0);
+  ofstream out(name.c_str()+extension);
+  
+  for(int y=0; y<Ny; ++y)
+  {
+	for(int x=0; x<Nx; ++x)
+	{	
+	  if (pointInWell(y, x)==true)
+	    {
+	    out << pow(mat(count,eigenNumber),2) << delimiter;
+	    ++count;
+	    }
+	  else 
+	    out << 0. << (x==Nx-1 ? '\n' : delimiter);
+	}
+  }
+  out.close();
+} //end of print vectors
+
+
+void printEigenvectors(const vector<vector<double> >& evecs, const char delimiter=',')
+//prints out a particular eigenvector grid
+{
+  string extension(file_extension(delimiter));
+
+  for(auto it=evecs.begin();it<evecs.end();++it)
+  {
+	  int count(0);
+	  ofstream out(("vector"+int2string(distance(evecs.begin(),it))+extension).c_str());
+	  
+	  for(int y=0; y<Ny; ++y)
+	  {
+		for(int x=0; x<Nx; ++x)
+		{	
+		  if (pointInWell(y, x)==true)
+		    {
+		    out << (*it).at(count)<< (x==Nx-1 ? '\n' : delimiter);
+		    ++count;
+		    }
+		  else 
+		    out << 0. << (x==Nx-1 ? '\n' : delimiter); //prints \n if end of line, delim otherwise
+		}
+	  }
+	   out.close();
+  }
+} //end of print vectors
+
+
+void printEigenvalues(const vector<double> & vec, const string name, const char delimiter=',')
+// print eigenvalues file
+{
+	// output to file
+	ofstream out(name.c_str()+file_extension(delimiter));
+	for(auto it=vec.begin(); it<vec.end(); ++it) // print numerical eigenvalues
+		out << (*it) << endl;
+	out.close();
+} //end of print eigenvalues
+
+
+template <typename boost_ublas_matrix>
+void printMatrix(const boost_ublas_matrix& mat, const string outputFilename,const char delimiter=',')
+//prints ublas matrix
+{
+	const int rows = mat.size1();
+	const int cols = mat.size2();
+	// output to file
+	ofstream out(outputFilename.c_str()+file_extension(delimiter));
+	for(int r = 0; r < rows; ++r)
+		for(int c = 0; c < cols; ++c)
+			out << mat(r, c) << (c==cols-1 ? '\n' : delimiter);
+
+	out.close();
+} //end of print matrix
+
+//----------------------------------------------------------------------------------
+// MATRIX ASSIGNMENT FUNCTIONS
+
+
 double reducedElement(int i, int j, int k, int l)
 //element for each symmetry case
 {	
 	// definitions for use in matrixElement
-	double element;
-	double norm;
+	double element, norm;
         
 	switch (symmetry)
 	{
 	case 'n': //matrix element for no axis of symmetry
 		element = matrixElement( i, j, k, l);
 	break;
-	
 	case 'x': //matrix element for x=0 axis of symmetry
 		norm=0.5;	// normalise
 		if (j==0) 
@@ -387,7 +427,6 @@ double reducedElement(int i, int j, int k, int l)
 		+ matrixElement( i , j, k,-l) + matrixElement( i ,-j, k,-l) 
 		); //end of element assignment
 		break;
-		
 	case 'y': //matrix element for y=0 axis of symmetry
 		norm=0.5; //normalise		
 		if (i==0)
@@ -399,7 +438,6 @@ double reducedElement(int i, int j, int k, int l)
 		+ matrixElement( i , j,-k, l) + matrixElement(-i , j,-k, l)
 		); //end of element assignment
 		break;
-		
 	case 'b': //matrix element for both  symmetry axes
 		norm = 0.25; //normalise			
 		if (i==0)
@@ -427,29 +465,11 @@ double reducedElement(int i, int j, int k, int l)
 		break;
 		default:
 		    cout<<"invalid symmetry option" <<endl;
+		    exit(EXIT_FAILURE);
 		break;
 	}		
 	return element;
 } //end of reduced element
-
-
-void nonzeroMaps(vector<pair <int,int> > &nonZeros, sparse_matrix &map_init)
-//returns map containing nonzero matrix elements
-{
-    int NumPoints(numberPoints());
-    vector<int> indices;
-    wrap(indices); //sets up indexing for use in the reducedElement function
-    int count=1;
-        for(vector<pair<int,int> >::iterator it = nonZeros.begin() ; it != nonZeros.end(); ++it) //iterate rows
-        {
-            int i=(*it).first / Nx; int j=(*it).first % Nx;
-            int k=(*it).second / Nx; int l=(*it).second % Nx;
-            int row=distance(indices.begin(),find(indices.begin(),indices.end(),(*it).first));
-            int col=distance(indices.begin(),find(indices.begin(),indices.end(),(*it).second));
-            int element=reducedElement(i,j,k,l); //define element
-            map_init[pair<int,int>(row,col)]=element; //assign element to map_init
-        }
-}
 
 
 void nonZeroElem(vector<pair <int,int> > &nonZeros) //non zero i-j combinations
@@ -496,9 +516,29 @@ void make_Matrix(boost_ublas_matrix &Mat, vector< pair<int,int> > &nonZeros)
         }
         
         if (debugging==true)
-            printMatrix(Mat,"MatrixNew-"+namingConvention()+".csv"); //for debugging
+            printMatrix(Mat,"MatrixNew-"+namingConvention()); //for debugging
 } //end of construction
 
+//----------------------------------------------------------------------------------
+//Correlation Specific Functions
+
+void nonzeroMaps(vector<pair <int,int> > &nonZeros, sparse_matrix &map_init)
+//returns map containing nonzero matrix elements
+{
+    int NumPoints(numberPoints());
+    vector<int> indices;
+    wrap(indices); //sets up indexing for use in the reducedElement function
+    int count=1;
+        for(vector<pair<int,int> >::iterator it = nonZeros.begin() ; it != nonZeros.end(); ++it) //iterate rows
+        {
+            int i=(*it).first / Nx; int j=(*it).first % Nx;
+            int k=(*it).second / Nx; int l=(*it).second % Nx;
+            int row=distance(indices.begin(),find(indices.begin(),indices.end(),(*it).first));
+            int col=distance(indices.begin(),find(indices.begin(),indices.end(),(*it).second));
+            int element=reducedElement(i,j,k,l); //define element
+            map_init[pair<int,int>(row,col)]=element; //assign element to map_init
+        }
+}
 
 int periodicBounds(int index)
 //returns pair containing mapped row and column to periodic matrix

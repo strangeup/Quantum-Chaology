@@ -49,8 +49,8 @@ const int loopEnd=8;
 //Shared Variables
 extern int Nx; // defines number of points in x
 extern int Ny; // defines number of points in y
-const int NxStart=1000;//300 //won't handle 100 million points
-const int NyStart=800; //irrational ratio so no degeneracy
+const int NxStart=300;//300 //won't handle 100 million points
+const int NyStart=100; //irrational ratio so no degeneracy
 const int radiusWell=53; //used for circular wells
 const double midY=0;//to set the midpoint of triangle/circle
 const double midX=0;

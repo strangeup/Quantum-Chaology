@@ -3,14 +3,18 @@
 #include "arpack_symm_si.hpp"
 
 //----------------------------------------------------------------------------------
-// //Global Variables
-//----------------------------------------------------------------------------------
+// Global Variables
 int Nx;
 int Ny;
 int R;
 int L;
 char symmetry;
 //----------------------------------------------------------------------------------
+// Declarations
+void correlationFunction(); //for correlation data
+void spectralAnalysis(); //for spectral data
+//----------------------------------------------------------------------------------
+
 int main()
 {
   // set as start values
@@ -41,7 +45,8 @@ void spectralAnalysis()
     Mat.clear(); //sets all elements == 0
 
     make_Matrix(Mat,nonZeros); //assigns matrix
-    printMatrix(Mat,"matrix.dat");
+    if (debugging==true)	
+    	printMatrix(Mat,"matrix");
     lapack::syev('N', 'U', Mat, evals, lapack::optimal_workspace());//solve, N means no eigenvectors
     printEigenvalues(evals,namingConvention()+".csv");
 }
@@ -69,12 +74,11 @@ vector<double> evals;
 vector<pair <int,int> > nonZeros;
 int N=numberPoints();
 ublas::compressed_matrix<double, ublas::column_major, 0,ublas::unbounded_array<int>,ublas::unbounded_array<double> >  Mat(N, N);
-//ublas::mapped_matrix<double> Mat(N, N);
-
 nonZeroElem(nonZeros); //assigns non zeros vector
 make_Matrix(Mat,nonZeros); //assigns matrix
 nonZeros.clear();
 text("Beginning Reverse Communication Loop");
 begin_rev_communication(Mat,evecs,evals,5,25,3.); //call arnoldi factorisation
-printEigenvalues(evals,"evals.csv");
+printEigenvalues(evals,namingConvention());
+printEigenvectors(evecs);
 }
