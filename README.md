@@ -6,6 +6,8 @@ This is intended to be a partial write-up of my findings and the progression of 
 
 Please note that amongst all of this I am still learning as well, any mistakes, contradictions or omissions please leave comments/issues! I don't profess that everything I have done is the best way (in fact I'm almost positive it isn't!) but this is how I have proceeded and I hope that this will be  useful for others starting out out with this manner of project.
 
+The rest of this readme documents the progression of the project. For more detailed information of specific files try my [wiki](https://github.com/strangeup/Quantum-Chaology/wiki) or the readme in the folder containing the file.
+
 ## Acknowledgements
 
 Many thanks to Paul for co-writing this simulation with me and to [Inducer](https://github.com/inducer) for making the initial bindings used for LAPACK and UMFPACK so accessible.
