@@ -6,8 +6,8 @@
 //Function Declarations
 //----------------------------------------------------------------------------------
 //Potential Well functions
-int matrixElement(int i,int j,int k,int l); //returns unreduced matrix element
-bool pointInWell(int y, int x); //checks if point in the potential well 
+int matrixElement(const int& i, const int& j, const int& k, const int& l) ; //returns unreduced matrix element
+bool pointInWell(const int& y,const int& x); //checks if point in the potential well 
 int numberPoints(); //returns number of points in the potential well
 void wrap(vector<int> &indexLookup); //wrapping function (passed by ref)
 void wrap( boost::unordered_map<int,int>& indiceLookup); //wrapping function (passed by ref)
@@ -29,18 +29,18 @@ string namingConvention(); //naming convention for files
 string file_extension(const char& delimiter); //returns the file extension deduced from delimiter
 
 //Matrix Assignment Functions
-double reducedElement(int i, int j, int k, int l); //reduced matrix element
+double reducedElement(const int& i, const int& j, const int& k, const int& l); //reduced matrix element
 void nonZeroElem(vector<pair<int,int> >& nonZeros); //non zero i-j combinations
 template <typename boost_ublas_matrix>
-void make_Matrix(boost_ublas_matrix &Mat, vector< pair<int,int> >& nonZeros);
+void make_Matrix(boost_ublas_matrix &Mat, const vector< pair<int,int> >& nonZeros);
 
 //Correlation Specific Functions
 int periodicBounds(int index); //maps generic index into periodic matrix index
-void nonzeroMaps(vector<pair <int,int> > &nonZeros, sparse_matrix &map_init); //"sparse" matrix
-void crossCorrelation(sparse_matrix &map_init, sparse_matrix &map_cmpr, sparse_matrix &map_cross);//calculates cross correlation
-double autoCorrelation(sparse_matrix &map_init); //calculates autocorrelation
-void printCorrelation(sparse_matrix &map_cross, double autoCorr, char flag);
-void periodicSolutions(sparse_matrix &map_cross,int &x,int &y, double &cross, int N);
+void nonzeroMaps(const vector<pair <int,int> > &nonZeros, sparse_matrix &map_init); //"sparse" matrix
+void crossCorrelation(const sparse_matrix &map_init, const sparse_matrix &map_cmpr, sparse_matrix &map_cross);//calculates cross correlation
+double autoCorrelation(const sparse_matrix &map_init); //calculates autocorrelation
+void printCorrelation(const sparse_matrix &map_cross, const double& autoCorr, const char& flag);
+void periodicSolutions(sparse_matrix &map_cross,int &x,int &y, const double &cross, const int N);
 
 //Arpack Specific Functions
 void arpack_solve();
@@ -48,7 +48,7 @@ void arpack_solve();
 //----------------------------------------------------------------------------------
 //POTENTIAL WELL FUNCTIONS
 
-bool pointInWell(int y, int x) // row, column format
+bool pointInWell(const int& y,const int& x) // row, column format
 //checks if point is interior (ie. non zero)
 {	
 	if ( symmetry =='n') // this if excludes boundary points
@@ -140,21 +140,18 @@ bool pointInWell(int y, int x) // row, column format
 }
 
 
-int matrixElement(int i, int j, int k, int l) 
+int matrixElement(const int& i, const int& j, const int& k, const int& l) 
 // in ijkl for the reflection
 // points ij and kl in potential by construction but i-1,j etc. not necessarily
 {
-		if (i==k && j==l) 
-			// if r in original big matrix (with zeros) = c
-			return 4;
- 
-		if  (abs(i-k)==1 && j==l) 
-			// requires separation of two statements
-			return -1; 
-
-		if  (i==k && abs(j-l)==1) 
-			return -1;
-	
+	if (i==k && j==l) 
+		// if r in original big matrix (with zeros) = c
+		return 4; 
+	if  (abs(i-k)==1 && j==l) 
+		// requires separation of two statements
+		return -1;
+	if  (i==k && abs(j-l)==1) 
+		return -1;	
 	return 0;
 }	 //end of matrixElement
 
@@ -336,7 +333,7 @@ void printEigenvectors(const ublas::matrix<double>& mat, const string name, cons
 	{	
 	  if (pointInWell(y, x)==true)
 	    {
-	    out << pow(mat(count,eigenNumber),2) << delimiter;
+	    out << pow(mat(count,eigenNumber),2) << (x==Nx-1 ? '\n' : delimiter);
 	    ++count;
 	    }
 	  else 
@@ -355,7 +352,7 @@ void printEigenvectors(const vector<vector<double> >& evecs, const char delimite
   for(auto it=evecs.begin();it<evecs.end();++it)
   {
 	  int count(0);
-	  ofstream out(("vector"+int2string(distance(evecs.begin(),it))+extension).c_str());
+	  ofstream out((int2string(distance(evecs.begin(),it))+extension).c_str());
 	  
 	  for(int y=0; y<Ny; ++y)
 	  {
@@ -363,7 +360,7 @@ void printEigenvectors(const vector<vector<double> >& evecs, const char delimite
 		{	
 		  if (pointInWell(y, x)==true)
 		    {
-		    out << (*it).at(count)<< (x==Nx-1 ? '\n' : delimiter);
+		    out << pow((*it).at(count),2)	<< (x==Nx-1 ? '\n' : delimiter);
 		    ++count;
 		    }
 		  else 
@@ -405,7 +402,7 @@ void printMatrix(const boost_ublas_matrix& mat, const string outputFilename,cons
 // MATRIX ASSIGNMENT FUNCTIONS
 
 
-double reducedElement(int i, int j, int k, int l)
+double reducedElement(const int& i, const int& j, const int& k, const int& l)
 //element for each symmetry case
 {	
 	// definitions for use in matrixElement
@@ -499,14 +496,14 @@ void nonZeroElem(vector<pair <int,int> > &nonZeros) //non zero i-j combinations
 
 
 template <typename boost_ublas_matrix>
-void make_Matrix(boost_ublas_matrix &Mat, vector< pair<int,int> > &nonZeros)
+void make_Matrix(boost_ublas_matrix &Mat, const vector< pair<int,int> > &nonZeros)
 // creates then solves the matrix faster than solveMatrix()
 {
         boost::unordered_map<int,int> indices; //empty vector
         wrap(indices); //add indexing to empty vector
         text("assign matrix for:" + namingConvention());
         int i,j,k,l,row,col;
-        for(vector<pair<int,int> >::iterator it = nonZeros.begin() ; it != nonZeros.end(); ++it) //iterate rows
+        for(auto it = nonZeros.begin() ; it != nonZeros.end(); ++it) //iterate rows
         {
             i=(*it).first / Nx; j=(*it).first % Nx;
             k=(*it).second / Nx; l=(*it).second % Nx;
@@ -522,14 +519,14 @@ void make_Matrix(boost_ublas_matrix &Mat, vector< pair<int,int> > &nonZeros)
 //----------------------------------------------------------------------------------
 //Correlation Specific Functions
 
-void nonzeroMaps(vector<pair <int,int> > &nonZeros, sparse_matrix &map_init)
+void nonzeroMaps(const vector<pair <int,int> > &nonZeros, sparse_matrix &map_init)
 //returns map containing nonzero matrix elements
 {
     int NumPoints(numberPoints());
     vector<int> indices;
     wrap(indices); //sets up indexing for use in the reducedElement function
     int count=1;
-        for(vector<pair<int,int> >::iterator it = nonZeros.begin() ; it != nonZeros.end(); ++it) //iterate rows
+        for(auto it = nonZeros.begin() ; it != nonZeros.end(); ++it) //iterate rows
         {
             int i=(*it).first / Nx; int j=(*it).first % Nx;
             int k=(*it).second / Nx; int l=(*it).second % Nx;
@@ -552,7 +549,7 @@ int periodicBounds(int index)
 }
 
 
-void periodicSolutions(sparse_matrix &map_cross,int &x,int &y, double &cross, int N)
+void periodicSolutions(sparse_matrix &map_cross,int &x,int &y, const double &cross, const int N)
 //correct boundary conditions for -N/2 < x,y < N/2
 {
    map_cross[pair<int,int>(x,y)]+=cross;       
@@ -566,7 +563,7 @@ void periodicSolutions(sparse_matrix &map_cross,int &x,int &y, double &cross, in
    map_cross[pair<int,int>(x,y+N)]+=cross;
  }
 
-void crossCorrelation(sparse_matrix &map_init, sparse_matrix &map_cmpr, sparse_matrix &map_cross)
+void crossCorrelation(const sparse_matrix &map_init, const sparse_matrix &map_cmpr, sparse_matrix &map_cross)
 {
     int count(1); //as a progress parameter
     const double MapSize=map_init.size(); //for convenience
@@ -588,7 +585,7 @@ cout<<endl;
 }
 
 
-double autoCorrelation(sparse_matrix &map_init)
+double autoCorrelation(const sparse_matrix &map_init)
 {
      double average;
      const double MapSize=map_init.size(); //for convenience
@@ -598,7 +595,7 @@ double autoCorrelation(sparse_matrix &map_init)
 }
 
 
-void printCorrelation(sparse_matrix &map_cross, double autoCorr, char flag)
+void printCorrelation(const sparse_matrix &map_cross, const double& autoCorr, const char& flag)
 {
     string filename="correlation-"+namingConvention()+".csv";
     int NumPoints=numberPoints(); //for convenience
