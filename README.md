@@ -45,3 +45,7 @@ A complete version of the bindings (written by my project partner Paul) which I 
 This problem was overcome by using [boost scoped_array](http://www.boost.org/doc/libs/1_57_0/libs/smart_ptr/scoped_array.htm) data type, which functions very similarly but stores data dynamically, not statically.
 
 The other files for the simulation are currently a work in progress, they are fully functional but unfortunately rather verbose and in some places less than intuitive. A more general fashion will be worked on throughout the course of the project.
+
+## March 8
+
+Several minor changes were implemented in the main code, including a (very) basic interface to allow a multi use static compilation. This is still under work so has not been included in this git yet. Investigation of the use of [Intel MKL Pardiso](https://software.intel.com/en-us/node/521677) instead of [umfpack](http://faculty.cse.tamu.edu/davis/suitesparse.html) has been made  to attempt to solve a problem with infinite eigenvalues for extremely large matrices. Another project underway is the implementation of a [marching squares algorithm] (http://en.wikipedia.org/wiki/Marching_squares) to gain contours of nodal surfaces in the wavefunctions of billiards.
