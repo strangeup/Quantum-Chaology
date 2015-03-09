@@ -19,6 +19,5 @@ when contours are closely spaced (e.g. a figure eight) the code
 crashes
 
 * An updated version with a crude fix avoids this error by catching 
-the exception and "closing" the loop by placing it back at it's 
-start value. This appears to be incorrect as a final incorrect 
-point will be added to each contour. 
+the exception and "escaping" the loop. This appears to still give
+wuestionable results.
