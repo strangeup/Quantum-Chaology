@@ -14,8 +14,11 @@
  object then sometimes tries to access them again (which 
 creates a key value pair initialised to zero)
 
-* Doesn't cause a problem for suitably spaced contours but
+* Doesn't appear to cause a problem for suitably spaced contours but
 when contours are closely spaced (e.g. a figure eight) the code 
 crashes
 
-* Currently working on a fix... 
+* An updated version with a crude fix avoids this error by catching 
+the exception and "closing" the loop by placing it back at it's 
+start value. This appears to be incorrect as a final incorrect 
+point will be added to each contour. 
