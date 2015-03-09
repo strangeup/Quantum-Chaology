@@ -4,7 +4,7 @@ using namespace std;
 
 boost::numeric::ublas::matrix<double> data(nx,ny); //global stuff
 boost::numeric::ublas::matrix<bool> mask(nx,ny);
-double contvalue(0.005);	
+double contvalue(0);	
 
 class pos //just a container for grid positions
 {
@@ -85,7 +85,7 @@ inline void take_step(const directions dir, pos& posi, pos& posn, //increments x
 	}
 	step=dir;
 	rpos interpos=rpos(posi,dir);
-	if (startdir==forward) curr_contour.push_back(interpos);
+	if (startdir==fwd) curr_contour.push_back(interpos);
 	else curr_contour.push_front(interpos);
 };
 
@@ -93,20 +93,26 @@ std::ostream& operator<<(std::ostream& os, const list<rpos>& contour) { //overlo
 	  os <<"Line[{\n";
 	  for (list<rpos>::const_iterator iterator = contour.begin(), end = contour.end();
 			  iterator != end;) {
-		  	  os << *iterator;
-		  	  if (++iterator != end) os <<",\n"; //outputs each contour
-		  	  else os <<"}]\n";
-	  	  }
+			  os << *iterator;
+			  if (++iterator != end) os <<",\n"; //outputs each contour
+			  else os <<"}]\n";
+		  }
 	  return os;
 }
 
 void draw_contours() { //this is the "main" branch
 	map<pos, int>  points;
+	ofstream maskout;
+	maskout.open("mask.csv");
+	if (maskout.fail()){cerr<<"Could not open file\n"; exit(-1);}
+
 	for(int ix=0;ix<nx;ix++)
 		for(int iy=0;iy<ny;iy++)
 		{	//data(ix,iy)=f(xmap(ix),ymap(iy)); //need to work out what this is actually
-		    mask(ix,iy)=data(ix,iy)<contvalue; //mask is a bool. this is the mask as described on wiki
+			mask(ix,iy)=data(ix,iy)<contvalue; //mask is a bool. this is the mask as described on wiki
+			maskout << mask(ix,iy)<< (iy==ny-1 ? '\n':',');
 		}
+	maskout.close();
 
 
 
@@ -132,9 +138,9 @@ void draw_contours() { //this is the "main" branch
 	while(points.begin()!=points.end()){ //while not on last value
 		it=points.begin();
 	list<rpos> curr_contour; //current contour
-	pos posi, posn; //position i and n
+	pos posi, posn; //position initial and end
 
-	start_dir firststep=forward; //enum: forward backward or done
+	start_dir firststep=fwd; //enum: fwd bwd or done
 
 	do {
 		posi=it->first;
@@ -149,8 +155,8 @@ void draw_contours() { //this is the "main" branch
 	/* 11
 	   01 : 14 or 1, x-1 or y+1 */
 				case BOOST_BINARY(1110): case BOOST_BINARY(0001): //case 1 or 14
-				if ( !(step == no_move && firststep == forward)) points.erase(posi);
-				if ( (step == no_move && firststep == forward) |
+				if ( !(step == no_move && firststep == fwd)) points.erase(posi);
+				if ( (step == no_move && firststep == fwd) |
 						(step != no_move && step != move_right))
 					take_step(move_left, posi, posn, curr_contour,step, firststep);
 				else
@@ -159,8 +165,8 @@ void draw_contours() { //this is the "main" branch
 	/* 11
 	   10 : 13 or 2: x+1 or y-1*/
 				case BOOST_BINARY(1101):case BOOST_BINARY(0010): //case 2 or 13
-				if ( !(step == no_move && firststep == forward)) points.erase(posi);
-				if ((step == no_move && firststep == forward) |
+				if ( !(step == no_move && firststep == fwd)) points.erase(posi);
+				if ((step == no_move && firststep == fwd) |
 						(step != no_move &&step != move_left))
 					take_step(move_right, posi, posn, curr_contour,step, firststep);
 				else
@@ -170,8 +176,8 @@ void draw_contours() { //this is the "main" branch
 		/* 10
 		   11 : 11 or 4: x+1 or y+1*/
 				case BOOST_BINARY(1011):case BOOST_BINARY(0100): //case 4 or 11
-				if ( !(step == no_move && firststep == forward)) points.erase(posi);
-				if ((step == no_move && firststep == forward) |
+				if ( !(step == no_move && firststep == fwd)) points.erase(posi);
+				if ((step == no_move && firststep == fwd) |
 					(step != no_move &&step!=move_down))
 					take_step(move_up,posi, posn, curr_contour,step, firststep);
 				else
@@ -181,8 +187,8 @@ void draw_contours() { //this is the "main" branch
 		/* 01
 		   11 : 7 or 8: x-1 or y+1*/
 				case BOOST_BINARY(0111):case BOOST_BINARY(1000): //case 8 or 7
-				if ( !(step == no_move && firststep == forward)) points.erase(posi);
-				if ((step == no_move && firststep == forward) |
+				if ( !(step == no_move && firststep == fwd)) points.erase(posi);
+				if ((step == no_move && firststep == fwd) |
 					(step != no_move &&step != move_right))
 					take_step(move_left,posi, posn, curr_contour,step, firststep);
 				else
@@ -192,8 +198,8 @@ void draw_contours() { //this is the "main" branch
 		/* 11
 		   00 : 12 or 3: x-1 or x+1*/
 				case BOOST_BINARY(1100):case BOOST_BINARY(0011): //case 3 or  12
-				if ( !(step == no_move && firststep == forward)) points.erase(posi);
-				if ((step == no_move && firststep == forward) |
+				if ( !(step == no_move && firststep == fwd)) points.erase(posi);
+				if ((step == no_move && firststep == fwd) |
 					(step != no_move &&step != move_right))
 					take_step(move_left,posi, posn, curr_contour,step, firststep);
 				else
@@ -202,8 +208,8 @@ void draw_contours() { //this is the "main" branch
 		/* 10
 		   10 : 9 or 6 y-1 or y+1*/
 				case BOOST_BINARY(1001):case BOOST_BINARY(0110): // case 9 or 6
-				if ( !(step == no_move && firststep == forward)) points.erase(posi);
-				if ((step == no_move && firststep == forward) |
+				if ( !(step == no_move && firststep == fwd)) points.erase(posi);
+				if ((step == no_move && firststep == fwd) |
 					(step != no_move &&step != move_up))
 					take_step(move_down,posi, posn, curr_contour,step, firststep);
 				else
@@ -226,7 +232,7 @@ void draw_contours() { //this is the "main" branch
 						take_step(move_down,posi, posn, curr_contour,step, firststep);
 						points[posi]= BOOST_BINARY(0100); break;
 					case no_move:  /* started at degenerate point */
-						if (firststep == forward)
+						if (firststep == fwd)
 							take_step(move_right,posi, posn, curr_contour,step, firststep);
 						/* don't delete half of point yet */
 						else
@@ -251,7 +257,7 @@ void draw_contours() { //this is the "main" branch
 				take_step(move_up,posi, posn, curr_contour,step, firststep);
 				points[posi]= BOOST_BINARY(1000);  break;
 			case no_move:
-				if (firststep == forward)
+				if (firststep == fwd)
 					take_step(move_left,posi, posn, curr_contour,step, firststep);
 				/* don't delete half of point yet */
 				else
@@ -259,13 +265,17 @@ void draw_contours() { //this is the "main" branch
 					points[posi]= BOOST_BINARY(0010);}
 		};
 		break ;
+		case BOOST_BINARY(0000): //this only comes up if element has already been erased by accident 
+			//posn=(it->first); //TESTING STUFF
+		break;
 		default:
 			cout <<"this should have been caught before? "<<current_point_type<<"\n"<<"position: "<< posn<<"start: "<<(it->first); exit(-1);
 	}//switch
-//	cout<<points[pos (2,12)]<<endl;
 //	cout <<"increment\n";
 	posi=posn;
-//	cout <<posn<<"\n";
+	if (current_point_type==0) //TESTING STUFF
+		break;//TESTING  STUFF
+	//cout <<posn<<"\n";
 	}//while inner
 //	cout << "reached end"<<posi<<"\n";
 	if (posi==(it->first)) {
@@ -273,25 +283,26 @@ void draw_contours() { //this is the "main" branch
 		firststep=done;// closed loop, finished
 		points.erase(posi);
 	}
-	else if (firststep==forward) firststep=backward;
+	else if (firststep==fwd) firststep=bwd;
 	else firststep=done;
 	} while (firststep!=done); //while do
 	contours.push_back(curr_contour);
 	} //while loop
 	cout<<contours.size()<<endl;
 	ofstream out;
-	out.open("data-test.txt");
+	out.open("data-test.m");
 	if (out.fail()){cerr<<"Could not open file\n"; exit(-1);}
 	out<<"Graphics[{\n";
 	for (list<list<rpos> >::const_iterator it=contours.begin(),end=contours.end(); it!=end;++it)
-		out<<(*it)<<',';
-	out<<"}]";
+		//if (!(*it).empty()) //nullptr
+			out<<(*it)<<(end==std::next(it) ? "}]":",");
+
 	out.close();
 }
 
 int main(){
 	fstream in;
-	in.open("3.csv");
+	in.open("4.dat");
 	if (in.fail()){cerr<<"Could not open file"; exit(-1);}
 	for (int i=0; i<nx; ++i)
 		for (int j=0; j<ny ; ++j)
