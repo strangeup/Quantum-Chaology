@@ -1,9 +1,19 @@
+/*
+ * marching_proto.cpp
+ *
+ *  Created on: Oct 31, 2012
+ *      Original Author: Niels Walet
+ *  Adapted on: Mar 10, 2015
+ *		Adapted by: David Robinson
+ */
+
+
 #include "marching_proto.h"
 
 using namespace std;
 
-boost::numeric::ublas::matrix<double> data(nx,ny); //global stuff
-boost::numeric::ublas::matrix<bool> mask(nx,ny);
+boost::numeric::ublas::matrix<double> data(Ny,Nx); //global stuff
+boost::numeric::ublas::matrix<bool> mask(Ny,Nx);
 double contvalue(0);	
 
 class pos //just a container for grid positions
@@ -23,13 +33,14 @@ public:
 	{ return ((pos1.x==pos2.x)&&(pos1.y==pos2.y)); //x1==x2 && y1==y2
 	};
 	bool inside ()
-	{ return (0<=x &&x<nx-1&&0<=y&&y<ny-1);}; //0<x<nx-1 && 0<=y<ny-1
+	{ return (0<=x &&x<Ny-1&&0<=y&&y<Nx-1);}; //0<x<Ny-1 && 0<=y<Nx-1
 	friend std::ostream& operator<<(std::ostream& os, const pos& posi)
 	{ os <<"("<<posi.x<<","<<posi.y<<")";return os;}; //overload << as (x,y)
 	int xc() const {return x;}; int yc() const {return y;}; //xcoord ycoord
 private:
 	int x, y;
 };
+
 class rpos //container for interpolated positions between grid points
 {
 public:
@@ -51,8 +62,7 @@ public:
 			cout <<" no_move reached 1";  exit(-1);
 		}
 		double d1=data(x1,y1)-contvalue,d2=data(x2,y2)-contvalue; //data is input matrix (global const) contvalue I presume is the value of the contour we are interested in
-		x=(-d2*x1+d1*x2)/(d1-d2); y=(-d2*y1+d1*y2)/(d1-d2); //gradients
-//		cout << d1 <<" "<<d2<<" "<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<" "<<x<<" "<<y<<endl;
+		x=(-d2*x1+d1*x2)/(d1-d2); y=(-d2*y1+d1*y2)/(d1-d2); //interpolations
 	};
 	rpos& operator +=(const rpos& add){
 		x+=add.x;y+=add.y;return *this; //overload +=
@@ -75,7 +85,6 @@ private:
 inline void take_step(const directions dir, pos& posi, pos& posn, //increments x and y etc
 		list<rpos>& curr_contour, directions& step, const start_dir& startdir)
 {
-//	cout <<"taking step "<<dir<<"\n";
 	switch (dir) {
 	case move_right:posn.incx();break; //increment x
 	case move_left:posn.decx();break; //decrement x
@@ -100,24 +109,24 @@ std::ostream& operator<<(std::ostream& os, const list<rpos>& contour) { //overlo
 	  return os;
 }
 
-void draw_contours() { //this is the "main" branch
+void draw_contours() { //this is the "main" function
 	map<pos, int>  points;
 	ofstream maskout;
 	maskout.open("mask.csv");
 	if (maskout.fail()){cerr<<"Could not open file\n"; exit(-1);}
 
-	for(int ix=0;ix<nx;ix++)
-		for(int iy=0;iy<ny;iy++)
-		{	//data(ix,iy)=f(xmap(ix),ymap(iy)); //need to work out what this is actually
+	for(int ix=0;ix<Ny;ix++)
+		for(int iy=0;iy<Nx;iy++)
+		{	
 			mask(ix,iy)=data(ix,iy)<contvalue; //mask is a bool. this is the mask as described on wiki
-			maskout << mask(ix,iy)<< (iy==ny-1 ? '\n':',');
+			maskout << mask(ix,iy)<< (iy==Nx-1 ? '\n':',');
 		}
 	maskout.close();
 
 
 
-	for(int ix=0;ix<nx-1;ix++)
-		for(int iy=0;iy<ny-1;iy++) {
+	for(int ix=0;ix<Ny-1;ix++)
+		for(int iy=0;iy<Nx-1;iy++) {
 			int label=2*(2*(2*mask(ix,iy+1)+mask(ix+1,iy+1))+
 						mask(ix+1,iy))+mask(ix,iy); //convert to a bool between 0 and 16
 
@@ -127,9 +136,7 @@ void draw_contours() { //this is the "main" branch
 			}
 			if (label != BOOST_BINARY( 0000 ) && label !=BOOST_BINARY( 1111 ) ) { //don't add trivial cases 0 and 15
 				points[pos(ix,iy)]=label; //add to points
-			//	if (ix<15)
-			//	cout <<ix<<" "<<iy<<" : "<<label<<" "<<mask(ix,iy+1)<<" "<<mask(ix+1,iy+1)<<" "
-			//			<<mask(ix+1,iy)<<" "<<mask(ix,iy)<<"\n";
+			//	cout <<ix<<" "<<iy<<" : "<<label<<" ";
 			}
 	}
 	list<list<rpos> > contours;
@@ -147,7 +154,7 @@ void draw_contours() { //this is the "main" branch
 		directions step=no_move;
 		while (posi.inside()&& (posi!=it->first||step==no_move)){
 			posn=posi;
-			cout << "LOOKING AT "<<posi<<" : "<<points[posi]<<"\n";
+//			cout << "LOOKING AT "<<posi<<" : "<<points[posi]<<"\n";
 			int current_point_type=points[posi];
 			switch(current_point_type)
 			{
@@ -265,21 +272,16 @@ void draw_contours() { //this is the "main" branch
 					points[posi]= BOOST_BINARY(0010);}
 		};
 		break ;
-		case BOOST_BINARY(0000): //this only comes up if element has already been erased by accident 
-			//posn=(it->first); //TESTING STUFF
-		break;
 		default:
 			cout <<"this should have been caught before? "<<current_point_type<<"\n"<<"position: "<< posn<<"start: "<<(it->first); exit(-1);
 	}//switch
 //	cout <<"increment\n";
 	posi=posn;
-	if (current_point_type==0) //TESTING STUFF
-		break;//TESTING  STUFF
 	//cout <<posn<<"\n";
 	}//while inner
 //	cout << "reached end"<<posi<<"\n";
 	if (posi==(it->first)) {
-		cout <<"closed loop \n";
+//		cout <<"closed loop \n";
 		firststep=done;// closed loop, finished
 		points.erase(posi);
 	}
@@ -288,13 +290,11 @@ void draw_contours() { //this is the "main" branch
 	} while (firststep!=done); //while do
 	contours.push_back(curr_contour);
 	} //while loop
-	cout<<contours.size()<<endl;
 	ofstream out;
 	out.open("data-test.m");
 	if (out.fail()){cerr<<"Could not open file\n"; exit(-1);}
 	out<<"Graphics[{\n";
 	for (list<list<rpos> >::const_iterator it=contours.begin(),end=contours.end(); it!=end;++it)
-		//if (!(*it).empty()) //nullptr
 			out<<(*it)<<(end==std::next(it) ? "}]":",");
 
 	out.close();
@@ -304,11 +304,10 @@ int main(){
 	fstream in;
 	in.open("4.dat");
 	if (in.fail()){cerr<<"Could not open file"; exit(-1);}
-	for (int i=0; i<nx; ++i)
-		for (int j=0; j<ny ; ++j)
+	for (int i=0; i<Ny; ++i)
+		for (int j=0; j<Nx ; ++j)
 			in >> data(i,j);
 	in.close();
 	draw_contours();
 	return 0;
-	
 }
