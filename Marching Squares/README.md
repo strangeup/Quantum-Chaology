@@ -1,7 +1,7 @@
 ### Marching Squares Algorithm (Marching_Squares.h)
 Adapted from code by Prof. Niels Walet
 
-Usage: call marching::draw_contours(data,contvalue,file_name). 
+Usage: marching::draw_contours(data,contvalue,file_name). 
 
 Arguments:
 
