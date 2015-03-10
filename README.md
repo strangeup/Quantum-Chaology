@@ -49,3 +49,7 @@ The other files for the simulation are currently a work in progress, they are fu
 ## March 8
 
 Several minor changes were implemented in the main code, including a (very) basic interface to allow a multi use static compilation. Investigation of the use of [Intel MKL Pardiso](https://software.intel.com/en-us/node/521677) instead of [umfpack](http://faculty.cse.tamu.edu/davis/suitesparse.html) has been made, attempting to solve a problem with infinite eigenvalues for extremely large matrices. Another project underway is the implementation of a [marching squares algorithm] (http://en.wikipedia.org/wiki/Marching_squares). This algorithm would allow the deduction of the contours of nodal surfaces in the wavefunctions of billiards, which would allow a very sparse storage and extra resolution using averaging.
+
+## March 9
+
+Marching squares algorithm fixed. THis was due to a mismatch in the labelling of Nx and Ny.
