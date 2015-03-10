@@ -52,4 +52,4 @@ Several minor changes were implemented in the main code, including a (very) basi
 
 ## March 9
 
-Marching squares algorithm fixed. THis was due to a mismatch in the labelling of Nx and Ny.
+Marching squares algorithm fixed. This was due to a mismatch in the labelling of Nx and Ny.
