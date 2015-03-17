@@ -10,6 +10,8 @@ Arguments:
 	* contvalue: `int` contour value to be investigated
 
 	* file_name: `string` output contours filename
+	
+	* output format flag: `char output_flag='M'` output format ('M' by default). M is Mathematica file, D is data file 
 
 Notes:
 
