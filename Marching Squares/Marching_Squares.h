@@ -124,7 +124,7 @@ std::ostream& operator<<(std::ostream& os, const list<rpos>& contour) { //overlo
 	  return os;
 }
 
-void draw_contours(ublas::matrix<double>& data, const double& contvalue, string file_name) { //this is the "main" function
+void draw_contours(ublas::matrix<double>& data, const double& contvalue, string file_name, char output_flag='M') { //this is the "main" function
 //contvalue is contour that we wish to look at (e.g. 0 values), data is ublas matrix containing input data
 	const int Nx=data.size2(); const int Ny=data.size1();
 	boost::numeric::ublas::matrix<bool> mask(Ny,Nx);
@@ -288,12 +288,16 @@ void draw_contours(ublas::matrix<double>& data, const double& contvalue, string 
 					points[posi]= BOOST_BINARY(0010);}
 		};
 		break ;
+		case BOOST_BINARY(0000):
+			break;
 		default:
 			cout <<"this should have been caught before? "<<current_point_type<<"\n"
 				 <<"position: "<< posn<<"start: "<<(it->first); exit(-1);
 	}//switch
 //	cout <<"increment\n";
 	posi=posn;
+	if (current_point_type==0) //TESTING STUFF
+	break;//TESTING  STUFF
 	//cout <<posn<<"\n";
 	}//while inner
 //	cout << "reached end"<<posi<<"\n";
@@ -307,12 +311,32 @@ void draw_contours(ublas::matrix<double>& data, const double& contvalue, string 
 	} while (firststep!=done); //while do
 	contours.push_back(curr_contour);
 	} //while loop
-	ofstream out;	
-	out.open(file_name.c_str());
-	if (out.fail()){cerr<<"Could not open file\n"; exit(-1);}
-	out<<"Graphics[{\n";
-	for (list<list<rpos> >::const_iterator it=contours.begin(),end=contours.end(); it!=end;++it)
-			out<<(*it)<<(end==next(it) ? "}]":","); //this is the c++11 bit
+	ofstream out;
+	switch (output_flag){
+	case 'M':
+		out.open((file_name+".m").c_str());
+		if (out.fail()){cerr<<"Could not open file\n"; exit(-1);}
+		out<<"Graphics[{\n";
+		for (list<list<rpos> >::const_iterator it=contours.begin(),end=contours.end(); it!=end;++it)
+				if (!(*it).empty()) //nullptr
+				out<<(*it)<<(end==next(it) ? "}]":","); //this is the c++11 bit
+	break;
+	case 'D':
+		out.open((file_name+".dat").c_str());
+		if (out.fail()){cerr<<"Could not open file\n"; exit(-1);}
+		
+		for (list<list<rpos> >::const_iterator it_out=contours.begin(),end=contours.end(); it_out!=end;++it_out)
+			if (!(*it_out).empty()) //nullptr
+				for (list<rpos>::const_iterator it_in = (*it_out).begin(), end = (*it_out).end();
+					  it_in != end;) {
+					  out << *it_in;
+					  if (++it_in != end) out <<","; //outputs each contour
+					  else out <<"\n";
+				  }
+	break;
+	default:
+		cerr<<"Unrecognised file flag (should be 'D' or 'M')"; exit(-1);
+	} 
 
 	out.close();
 }
