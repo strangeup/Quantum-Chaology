@@ -52,4 +52,8 @@ Several minor changes were implemented in the main code, including a (very) basi
 
 ## March 9
 
-Marching squares algorithm fixed. This was due to a mismatch in the labelling of Nx and Ny.
+Marching squares algorithm fixed. This was due to a mismatch in the labelling of Nx and Ny. Work began on code to implement a "box counting" agorithm for measurement of fractality. Initial code was functional but extremely slow
+
+## March 17
+
+The box counting algorithm was updated to be faster (and neater) and appears (after initial testing) to be correct. Interestingly both the rectangular and stadium billiards were found to have similar fractal dimension (~1.9).
