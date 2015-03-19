@@ -57,3 +57,7 @@ Marching squares algorithm fixed. This was due to a mismatch in the labelling of
 ## March 17
 
 The box counting algorithm was updated to be faster (and neater) and appears (after initial testing) to be correct. Interestingly both the rectangular and stadium billiards were found to have similar fractal dimension (~1.9).
+
+## March 19
+
+Fixed a minor bug with the function empty() (now renamed to clear()). This function was not actually emptying the vector, which caused issues with the input. Now both classes have overloaded input operators and several other added functions. The static compile has had a few minor changes to allow neater output and finally the marching squares algorithm now always outputs in a form that can easily be immediately interpreted.
