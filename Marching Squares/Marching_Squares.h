@@ -27,6 +27,7 @@ namespace marching{ //put all in namespace marching:: to avoid potential clashes
 //Global Variables
 enum directions {move_up, move_down, move_left, move_right, no_move};
 enum start_dir {fwd, bwd, done};//forward and backward renamed so compatible with c++11
+int number_empty_contours(0);
 using namespace std;
 namespace ublas=boost::numeric::ublas;
 
@@ -309,8 +310,12 @@ void draw_contours(ublas::matrix<double>& data, const double& contvalue, string 
 	else if (firststep==fwd) firststep=bwd;
 	else firststep=done;
 	} while (firststep!=done); //while do
-	contours.push_back(curr_contour);
+	if(!(curr_contour.empty()))//avoids empty list
+		contours.push_back(curr_contour);
+	else ++number_empty_contours;
 	} //while loop
+
+	cout<<"Ignored "<< number_empty_contours<<" empty contours.\n";
 	ofstream out;
 	switch (output_flag){
 	case 'M':
@@ -318,20 +323,18 @@ void draw_contours(ublas::matrix<double>& data, const double& contvalue, string 
 		if (out.fail()){cerr<<"Could not open file\n"; exit(-1);}
 		out<<"Graphics[{\n";
 		for (list<list<rpos> >::const_iterator it=contours.begin(),end=contours.end(); it!=end;++it)
-				if (!(*it).empty()) //nullptr
 				out<<(*it)<<(end==next(it) ? "}]":","); //this is the c++11 bit
 	break;
 	case 'D':
 		out.open((file_name+".dat").c_str());
 		if (out.fail()){cerr<<"Could not open file\n"; exit(-1);}
 		
-		for (list<list<rpos> >::const_iterator it_out=contours.begin(),end=contours.end(); it_out!=end;++it_out)
-			if (!(*it_out).empty()) //nullptr
-				for (list<rpos>::const_iterator it_in = (*it_out).begin(), end = (*it_out).end();
-					  it_in != end;) {
+		for (list<list<rpos> >::const_iterator it_out=contours.begin(),end_out=contours.end(); it_out!=end_out;++it_out)
+				for (list<rpos>::const_iterator it_in = (*it_out).begin(), end_in = (*it_out).end();
+					  it_in != end_in;) {
 					  out << *it_in;
-					  if (++it_in != end) out <<","; //outputs each contour
-					  else out <<"\n";
+					  if (++it_in != end_in) out <<","; //outputs each contour
+					  else if((next(it_out)!=end_out)) out<<'\n'; //this also uses c++11
 				  }
 	break;
 	default:
